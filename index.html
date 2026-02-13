@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day!</title>
+    <!-- Added Dancing Script for the notepad -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Sacramento&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            color: #d63384;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Sacramento', cursive;
+        }
+
+        /* --- SECTIONS COMMON --- */
+        section {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 2rem;
+            scroll-snap-align: start;
+        }
+
+        /* --- HERO SECTION --- */
+        #hero {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Falling Text Animation (Initial Load) */
+        .hero-text {
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            /* Initial state handled by animation */
+            animation: fallIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            will-change: transform, opacity;
+        }
+
+        @keyframes fallIn {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Hero Decoration Images */
+        .hero-decoration {
+            position: absolute;
+            width: 150px;
+            height: auto;
+            opacity: 0;
+            /* Starts hidden, fades in via CSS, then controlled by JS */
+            animation: fadeInCorners 1.5s ease-out 1s forwards;
+            z-index: 5;
+            transition: opacity 0.1s linear;
+            /* Smooth transition for scroll effect */
+        }
+
+        @keyframes fadeInCorners {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .pos-tl {
+            top: -30px;
+            left: -100px;
+            width: 750px;
+            transform: rotate(-15deg);
+        }
+
+        .pos-tr {
+            width: 200px;
+            top: 20px;
+            right: 50px;
+            transform: rotate(20deg);
+        }
+
+        .pos-bl {
+            bottom: 40px;
+            left: 20px;
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .pos-br {
+            bottom: -30px;
+            right: -100px;
+            width: 750px;
+            transform: rotate(165deg);
+        }
+
+        /* Floating Hearts BG */
+        .bg-heart {
+            position: absolute;
+            bottom: -10vh;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 2rem;
+            animation: float 6s linear infinite;
+            /* Changed to linear for consistent flow */
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- MEMORIES SECTION --- */
+        #memories {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 20;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease;
+        }
+
+        #memories.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: #d63384;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        .photo-frame {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            transition: transform 0.3s;
+        }
+
+        .photo-frame:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .photo-frame:hover {
+            transform: scale(1.1) rotate(0);
+            z-index: 10;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .reasons-list {
+            text-align: left;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .reasons-list ul {
+            list-style: none;
+        }
+
+        .reasons-list li {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .reasons-list li::before {
+            content: '❤️';
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+
+        /* --- ENVELOPE BUTTON --- */
+        .letter-trigger {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(214, 51, 132, 0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: softBounce 2s infinite;
+        }
+
+        .letter-trigger:hover {
+            transform: scale(1.2) rotate(-5deg);
+            background: #fff0f5;
+        }
+
+        .letter-trigger svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        @keyframes softBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* --- LETTER SECTION --- */
+        #letter-section {
+            background: #fff0f5;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s;
+            min-height: 100vh;
+            height: auto;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            position: relative;
+            overflow: hidden;
+            /* Contains the moving hearts */
+        }
+
+        .notepad {
+            width: 90%;
+            max-width: 700px;
+            min-height: 80vh;
+            background-color: #fff;
+            background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
+
+            /* UPDATED: Matches the new line-height (1.5 spacing) */
+            background-size: 100% 2.4rem;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            padding-left: 5rem;
+
+            /* Add Z-index to sit on top of hearts */
+            position: relative;
+            z-index: 10;
+
+            /* UPDATED FONT & SPACING */
+            line-height: 2.4rem;
+            /* 1.5 times the 1.6rem font size */
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+
+            color: #555;
+            transform: translateY(100px);
+            transition: transform 0.8s ease-out;
+        }
+
+        .notepad::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 3rem;
+            width: 2px;
+            background: #ff4d6d;
+        }
+
+        /* --- ANIMATED BACKGROUND HEARTS (LETTER SECTION) --- */
+        .letter-bg-heart {
+            position: absolute;
+            top: 50%;
+            font-size: 2rem;
+            color: #ff4d6d;
+            opacity: 0.6;
+            z-index: 0;
+            /* Behind the notepad */
+            pointer-events: none;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-10vw) translateY(0);
+            }
+
+            100% {
+                transform: translateX(110vw) translateY(0);
+            }
+        }
+
+        @keyframes moveLeft {
+            0% {
+                transform: translateX(110vw) translateY(0);
+            }
+
+            100% {
+                transform: translateX(-10vw) translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="hero">
+        <h1 class="hero-text" id="heroText">Happy Valentine's Day Sidhi!</h1>
+
+        <img src="banner.png" alt="Banner" class="hero-decoration pos-tl" id="decor-tl">
+
+        <img src="kiss.png" alt="Kiss" class="hero-decoration pos-tr" id="decor-tr">
+
+        <img src="kitty.png" alt="Decoration" class="hero-decoration pos-bl" id="decor-bl">
+
+        <img src="banner.png" alt="Decoration" class="hero-decoration pos-br" id="decor-br">
+
+    </section>
+
+    <section id="memories">
+        <h2 class="section-title">You + Me Forever</h2>
+
+        <div class="photo-grid">
+            <div class="photo-frame">
+                <img src="cute.JPG" alt="Cute Photo 1">
+            </div>
+            <div class="photo-frame">
+                <img src="ny.jpg" alt="Cute Photo 2">
+            </div>
+            <div class="photo-frame">
+                <img src="xmas.jpg" alt="Cute Photo 3">
+            </div>
+        </div>
+
+        <div class="reasons-list">
+            <h3>I Love...</h3>
+            <ul>
+                <li>Your hypnotizing gorgeous eyes</li>
+                <li>The way you motivate and push me to grow</li>
+                <li>Our stupid humor and inside jokes</li>
+                <li>How I savor every second despite time flying by when we're together</li>
+                <li>You, the bestest friend I could ever ask for</li>
+            </ul>
+        </div>
+
+        <div class="letter-trigger" onclick="openLetter()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6M22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6M22 6L12 13L2 6"
+                    stroke="#ff4d6d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span style="font-size: 0.7rem; font-weight: bold; color: #ff4d6d; margin-top: 2px;">OPEN</span>
+        </div>
+    </section>
+
+    <section id="letter-section">
+        <div class="notepad">
+            <p>Dearest Sidhi,</p>
+            <br>
+            <p>
+                Happy Valentine's my love! I wanted to make a little something for you and remind you of us.
+
+                You're my best friend. Not just the person I love, but the person I choose to tell everything to, laugh
+                with, grow with, and lean on.
+
+                In the beginning, it was exhilarating. And honestly, terrifying too. You weren't even looking for a
+                partner, and somehow you took a chance on me. That meant more than you probably realized. And when long
+                distance came at not even six months in, it wasn't just you taking a chance on me anymore. we chose to
+                take a chance on each other. That's when I knew what we had was different.
+
+                What we have is rare. I've never heard a story quite like ours. The way we've loved, trusted, and stayed
+                strong through change proves to me that our love isn't ordinary. It's intentional, resilient, and ours.
+
+                I promise you we will travel the world together and turn our memories into little magazines filled with
+                our photos. We'll have a home café someday, and I'll be your personal barista every morning. There will
+                be endless Target runs, endless matcha runs, and so many TV shows we stay up too late binging together.
+                A whole lifetime of simple, beautiful moments. We both work towards it every single day.
+
+                And through all of it, I'll always choose you, my best friend, my partner, my favorite person.
+                <br><br>
+                I can't wait to make more memories together.
+            </p>
+            <br>
+            <p>Love you always angel,<br>Vedant</p>
+        </div>
+    </section>
+
+    <script>
+        // --- 1. GENERATE FLOATING HEARTS IN HERO ---
+        function createHearts() {
+            const hero = document.getElementById('hero');
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('bg-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 4 + 3 + 's';
+                heart.style.animationDelay = Math.random() * -5 + 's';
+                heart.style.fontSize = Math.random() * 4 + 2 + 'rem';
+                hero.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // --- 2. HANDLE SCROLL ANIMATIONS (PARALLAX & FADE) ---
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroText = document.getElementById('heroText');
+            const decorations = document.querySelectorAll('.hero-decoration');
+            const windowHeight = window.innerHeight;
+
+            // --- A. TEXT ANIMATION ---
+            // Only animate if we are in the first section
+            if (scrollY < windowHeight) {
+                // Moves text DOWN as you scroll (falling effect) + fades out
+                // We add scrollY to the "0" starting position.
+                heroText.style.transform = `translateY(${scrollY * 0.8}px)`;
+                heroText.style.opacity = 1 - (scrollY / (windowHeight * 0.5));
+            }
+
+            // --- B. DECORATION IMAGES ANIMATION ---
+            decorations.forEach(decor => {
+                // Fades out as you scroll down.
+                // 1 - (scrollY / 400) means at 400px scroll, opacity is 0.
+                let newOpacity = 1 - (scrollY / 400);
+                if (newOpacity < 0) newOpacity = 0;
+                decor.style.opacity = newOpacity;
+            });
+        });
+
+        // --- 3. SCROLL REVEAL FOR SECTION 2 ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(document.getElementById('memories'));
+
+        // --- 4. HANDLE LETTER CLICK ---
+        function openLetter() {
+            const letterSection = document.getElementById('letter-section');
+            const notepad = document.querySelector('.notepad');
+
+            // Trigger the background hearts for this section
+            createLetterHearts();
+
+            letterSection.style.display = 'flex';
+
+            setTimeout(() => {
+                letterSection.style.opacity = '1';
+                notepad.style.transform = 'translateY(0)';
+                letterSection.scrollIntoView({ behavior: 'smooth' });
+            }, 10);
+        }
+
+        // --- 5. GENERATE SIDE-MOVING HEARTS FOR LETTER SECTION ---
+        function createLetterHearts() {
+            // Prevent duplicates if clicked multiple times
+            if (document.querySelector('.letter-bg-heart')) return;
+
+            const section = document.getElementById('letter-section');
+            const heartCount = 30;
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('letter-bg-heart');
+                heart.innerHTML = '❤️'; // Red heart emoji
+
+                // Randomize Vertical Position
+                heart.style.top = Math.random() * 100 + '%';
+
+                // Randomize Size
+                const size = Math.random() * 2 + 1; // 1rem to 3rem
+                heart.style.fontSize = size + 'rem';
+
+                // Randomize Animation Speed
+                const duration = Math.random() * 10 + 10; // 10s to 20s
+                heart.style.animationDuration = duration + 's';
+                heart.style.animationTimingFunction = 'linear';
+                heart.style.animationIterationCount = 'infinite';
+
+                // Randomize Direction (Left-to-Right or Right-to-Left)
+                if (Math.random() > 0.5) {
+                    heart.style.animationName = 'moveRight';
+                    heart.style.left = '-10%'; // Start off-screen left
+                } else {
+                    heart.style.animationName = 'moveLeft';
+                    heart.style.left = '110%'; // Start off-screen right
+                }
+
+                // Randomize Delay so they are spread out across the screen immediately
+                // Negative delay makes it start as if it had already been running
+                heart.style.animationDelay = (Math.random() * -20) + 's';
+
+                section.appendChild(heart);
+            }
+        }
+    </script>
+</body>
+
+</html>
