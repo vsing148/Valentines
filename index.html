@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Valentine's Day!</title>
-    <!-- Added Dancing Script for the notepad -->
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Sacramento&family=Nunito:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
-        /* --- RESET & BASE STYLES --- */
         * {
             margin: 0;
             padding: 0;
@@ -35,7 +33,6 @@
             font-family: 'Sacramento', cursive;
         }
 
-        /* --- SECTIONS COMMON --- */
         section {
             height: 100vh;
             width: 100vw;
@@ -48,7 +45,6 @@
             scroll-snap-align: start;
         }
 
-        /* --- HERO SECTION --- */
         #hero {
             position: relative;
             z-index: 10;
@@ -56,7 +52,6 @@
             overflow: hidden;
         }
 
-        /* Falling Text Animation (Initial Load) */
         .hero-text {
             font-size: 5rem;
             color: #fff;
@@ -78,17 +73,14 @@
             }
         }
 
-        /* Hero Decoration Images */
         .hero-decoration {
             position: absolute;
             width: 150px;
             height: auto;
             opacity: 0;
-            /* Starts hidden, fades in via CSS, then controlled by JS */
             animation: fadeInCorners 1.5s ease-out 1s forwards;
             z-index: 5;
             transition: opacity 0.1s linear;
-            /* Smooth transition for scroll effect */
         }
 
         @keyframes fadeInCorners {
@@ -124,14 +116,12 @@
             transform: rotate(165deg);
         }
 
-        /* Floating Hearts BG */
         .bg-heart {
             position: absolute;
             bottom: -10vh;
             color: rgba(255, 255, 255, 0.4);
             font-size: 2rem;
             animation: float 6s linear infinite;
-            /* Changed to linear for consistent flow */
             z-index: -1;
         }
 
@@ -151,7 +141,6 @@
             }
         }
 
-        /* --- MEMORIES SECTION --- */
         #memories {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
@@ -234,7 +223,6 @@
             top: 2px;
         }
 
-        /* --- ENVELOPE BUTTON --- */
         .letter-trigger {
             position: absolute;
             bottom: 40px;
@@ -275,7 +263,6 @@
             }
         }
 
-        /* --- LETTER SECTION --- */
         #letter-section {
             background: #fff0f5;
             display: none;
@@ -287,7 +274,6 @@
             padding-bottom: 5rem;
             position: relative;
             overflow: hidden;
-            /* Contains the moving hearts */
         }
 
         .notepad {
@@ -296,21 +282,13 @@
             min-height: 80vh;
             background-color: #fff;
             background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
-
-            /* UPDATED: Matches the new line-height (1.5 spacing) */
             background-size: 100% 2.4rem;
-
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 3rem;
             padding-left: 5rem;
-
-            /* Add Z-index to sit on top of hearts */
             position: relative;
             z-index: 10;
-
-            /* UPDATED FONT & SPACING */
             line-height: 2.4rem;
-            /* 1.5 times the 1.6rem font size */
             font-family: 'Dancing Script', cursive;
             font-size: 1.6rem;
 
@@ -329,7 +307,6 @@
             background: #ff4d6d;
         }
 
-        /* --- ANIMATED BACKGROUND HEARTS (LETTER SECTION) --- */
         .letter-bg-heart {
             position: absolute;
             top: 50%;
@@ -337,7 +314,6 @@
             color: #ff4d6d;
             opacity: 0.6;
             z-index: 0;
-            /* Behind the notepad */
             pointer-events: none;
         }
 
@@ -447,7 +423,6 @@
     </section>
 
     <script>
-        // --- 1. GENERATE FLOATING HEARTS IN HERO ---
         function createHearts() {
             const hero = document.getElementById('hero');
             for (let i = 0; i < 30; i++) {
@@ -463,33 +438,23 @@
         }
         createHearts();
 
-        // --- 2. HANDLE SCROLL ANIMATIONS (PARALLAX & FADE) ---
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
             const heroText = document.getElementById('heroText');
             const decorations = document.querySelectorAll('.hero-decoration');
             const windowHeight = window.innerHeight;
 
-            // --- A. TEXT ANIMATION ---
-            // Only animate if we are in the first section
             if (scrollY < windowHeight) {
-                // Moves text DOWN as you scroll (falling effect) + fades out
-                // We add scrollY to the "0" starting position.
                 heroText.style.transform = `translateY(${scrollY * 0.8}px)`;
                 heroText.style.opacity = 1 - (scrollY / (windowHeight * 0.5));
             }
-
-            // --- B. DECORATION IMAGES ANIMATION ---
             decorations.forEach(decor => {
-                // Fades out as you scroll down.
-                // 1 - (scrollY / 400) means at 400px scroll, opacity is 0.
                 let newOpacity = 1 - (scrollY / 400);
                 if (newOpacity < 0) newOpacity = 0;
                 decor.style.opacity = newOpacity;
             });
         });
 
-        // --- 3. SCROLL REVEAL FOR SECTION 2 ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -500,12 +465,9 @@
 
         observer.observe(document.getElementById('memories'));
 
-        // --- 4. HANDLE LETTER CLICK ---
         function openLetter() {
             const letterSection = document.getElementById('letter-section');
             const notepad = document.querySelector('.notepad');
-
-            // Trigger the background hearts for this section
             createLetterHearts();
 
             letterSection.style.display = 'flex';
@@ -517,9 +479,7 @@
             }, 10);
         }
 
-        // --- 5. GENERATE SIDE-MOVING HEARTS FOR LETTER SECTION ---
         function createLetterHearts() {
-            // Prevent duplicates if clicked multiple times
             if (document.querySelector('.letter-bg-heart')) return;
 
             const section = document.getElementById('letter-section');
@@ -528,34 +488,22 @@
             for (let i = 0; i < heartCount; i++) {
                 const heart = document.createElement('div');
                 heart.classList.add('letter-bg-heart');
-                heart.innerHTML = '❤️'; // Red heart emoji
-
-                // Randomize Vertical Position
+                heart.innerHTML = '❤️';
                 heart.style.top = Math.random() * 100 + '%';
-
-                // Randomize Size
-                const size = Math.random() * 2 + 1; // 1rem to 3rem
+                const size = Math.random() * 2 + 1;
                 heart.style.fontSize = size + 'rem';
-
-                // Randomize Animation Speed
-                const duration = Math.random() * 10 + 10; // 10s to 20s
+                const duration = Math.random() * 10 + 10;
                 heart.style.animationDuration = duration + 's';
                 heart.style.animationTimingFunction = 'linear';
                 heart.style.animationIterationCount = 'infinite';
-
-                // Randomize Direction (Left-to-Right or Right-to-Left)
                 if (Math.random() > 0.5) {
                     heart.style.animationName = 'moveRight';
-                    heart.style.left = '-10%'; // Start off-screen left
+                    heart.style.left = '-10%';
                 } else {
                     heart.style.animationName = 'moveLeft';
-                    heart.style.left = '110%'; // Start off-screen right
+                    heart.style.left = '110%';
                 }
-
-                // Randomize Delay so they are spread out across the screen immediately
-                // Negative delay makes it start as if it had already been running
                 heart.style.animationDelay = (Math.random() * -20) + 's';
-
                 section.appendChild(heart);
             }
         }
